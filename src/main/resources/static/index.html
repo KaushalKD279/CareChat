@@ -154,9 +154,16 @@
 
         socket.onmessage = function (event) {
 
+            const chatMessage = JSON.parse(event.data);
+
             const messages = document.getElementById("messages");
 
-            messages.innerHTML += "<p>" + event.data + "</p>";
+            messages.innerHTML +=
+                "<p><strong>" +
+                chatMessage.sender +
+                "</strong> : " +
+                chatMessage.content +
+                "</p>";
 
             messages.scrollTop = messages.scrollHeight;
         };
@@ -174,7 +181,14 @@
         if(input.value.trim()==="")
             return;
 
-        socket.send(username + " : " + input.value);
+        const chatMessage = {
+
+            sender: username,
+            content: input.value
+
+        };
+
+        socket.send(JSON.stringify(chatMessage));
 
         input.value="";
     }

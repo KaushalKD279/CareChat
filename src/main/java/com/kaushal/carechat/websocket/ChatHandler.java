@@ -27,6 +27,8 @@
 
 package com.kaushal.carechat.websocket;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kaushal.carechat.model.ChatMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -39,6 +41,9 @@ public class ChatHandler extends TextWebSocketHandler {
 
     // Stores all connected browser sessions
     private final Set<WebSocketSession> sessions = new HashSet<>();
+
+    // Converts Java Objects <-> JSON
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -66,22 +71,32 @@ public class ChatHandler extends TextWebSocketHandler {
     }
 
     @Override
-    
     protected void handleTextMessage(WebSocketSession session,
                                      TextMessage message) throws Exception {
+
+        // Convert incoming JSON to ChatMessage object
+        ChatMessage chatMessage = objectMapper.readValue(
+                message.getPayload(),
+                ChatMessage.class
+        );
 
         System.out.println("--------------------------------");
         System.out.println("Message Received");
         System.out.println("From Session : " + session.getId());
-        System.out.println("Message      : " + message.getPayload());
+        System.out.println("Sender       : " + chatMessage.getSender());
+        System.out.println("Content      : " + chatMessage.getContent());
         System.out.println("--------------------------------");
 
+        // Convert ChatMessage object back to JSON
+        String jsonMessage = objectMapper.writeValueAsString(chatMessage);
+
+        // Broadcast JSON to all connected clients
         for (WebSocketSession client : sessions) {
 
             if (client.isOpen()) {
 
                 client.sendMessage(
-                        new TextMessage(message.getPayload())
+                        new TextMessage(jsonMessage)
                 );
 
             }

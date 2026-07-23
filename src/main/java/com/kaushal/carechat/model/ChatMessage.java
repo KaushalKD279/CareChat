@@ -3,15 +3,13 @@ package com.kaushal.carechat.model;
 public class ChatMessage {
 
     private String sender;
-    private String receiver;
     private String content;
 
     public ChatMessage() {
     }
 
-    public ChatMessage(String sender, String receiver, String content) {
+    public ChatMessage(String sender, String content) {
         this.sender = sender;
-        this.receiver = receiver;
         this.content = content;
     }
 
@@ -23,19 +21,19 @@ public class ChatMessage {
         this.sender = sender;
     }
 
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "sender='" + sender + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }
