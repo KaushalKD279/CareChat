@@ -158,8 +158,19 @@
 
             const messages = document.getElementById("messages");
 
+            const time = new Date(chatMessage.timestamp);
+
+            const formattedTime =
+                time.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+
             messages.innerHTML +=
-                "<p><strong>" +
+                "<p>" +
+                "[" + formattedTime + "] " +
+                "<strong>" +
                 chatMessage.sender +
                 "</strong> : " +
                 chatMessage.content +

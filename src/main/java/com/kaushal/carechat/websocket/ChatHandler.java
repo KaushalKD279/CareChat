@@ -34,6 +34,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +44,12 @@ public class ChatHandler extends TextWebSocketHandler {
     private final Set<WebSocketSession> sessions = new HashSet<>();
 
     // Converts Java Objects <-> JSON
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    //private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
+
+    public ChatHandler(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -75,10 +81,12 @@ public class ChatHandler extends TextWebSocketHandler {
                                      TextMessage message) throws Exception {
 
         // Convert incoming JSON to ChatMessage object
-        ChatMessage chatMessage = objectMapper.readValue(
-                message.getPayload(),
-                ChatMessage.class
-        );
+        ChatMessage chatMessage =
+                objectMapper.readValue(
+                        message.getPayload(),
+                        ChatMessage.class);
+
+        chatMessage.setTimestamp(LocalDateTime.now());
 
         System.out.println("--------------------------------");
         System.out.println("Message Received");

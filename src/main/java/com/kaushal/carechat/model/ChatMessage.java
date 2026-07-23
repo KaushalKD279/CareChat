@@ -1,9 +1,12 @@
 package com.kaushal.carechat.model;
 
+import java.time.LocalDateTime;
+
 public class ChatMessage {
 
     private String sender;
     private String content;
+    private LocalDateTime timestamp;
 
     public ChatMessage() {
     }
@@ -27,6 +30,14 @@ public class ChatMessage {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
