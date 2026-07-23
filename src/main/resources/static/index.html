@@ -1,0 +1,186 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>CareChat - Phase 1</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h2>CareChat</h2>-->
+
+<!--<input type="text" id="message" placeholder="Type message">-->
+<!--<button onclick="sendMessage()">Send</button>-->
+
+<!--<hr>-->
+
+<!--<div id="chat"></div>-->
+
+<!--<script>-->
+
+<!--    const socket = new WebSocket("ws://localhost:8080/chat");-->
+
+<!--    socket.onopen = function () {-->
+<!--        console.log("Connected");-->
+<!--    };-->
+
+<!--    socket.onmessage = function (event) {-->
+
+<!--        const chat = document.getElementById("chat");-->
+
+<!--        chat.innerHTML += "<p>" + event.data + "</p>";-->
+
+<!--    };-->
+
+<!--    socket.onclose = function () {-->
+<!--        console.log("Disconnected");-->
+<!--    };-->
+
+<!--    function sendMessage() {-->
+
+<!--        const input = document.getElementById("message");-->
+
+<!--        socket.send(input.value);-->
+
+<!--        input.value = "";-->
+
+<!--    }-->
+
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CareChat</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            width: 500px;
+            margin:40px auto;
+        }
+
+        #chatSection{
+            display:none;
+        }
+
+        #messages{
+            border:1px solid #ccc;
+            height:250px;
+            overflow-y:auto;
+            margin-top:20px;
+            padding:10px;
+        }
+
+        input{
+            padding:8px;
+            width:300px;
+            margin:5px;
+        }
+
+        button{
+            padding:8px 15px;
+            cursor:pointer;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h2>CareChat</h2>
+
+<div id="loginSection">
+
+    <h3>Enter Username</h3>
+
+    <input
+            type="text"
+            id="username"
+            placeholder="Enter username">
+
+    <button onclick="connectUser()">
+        Connect
+    </button>
+
+</div>
+
+<div id="chatSection">
+
+    <h3 id="connectedUser"></h3>
+
+    <input
+            type="text"
+            id="message"
+            placeholder="Type message">
+
+    <button onclick="sendMessage()">
+        Send
+    </button>
+
+    <div id="messages"></div>
+
+</div>
+
+<script>
+
+    let username = "";
+    let socket = null;
+
+    function connectUser(){
+
+        username = document.getElementById("username").value;
+
+        if(username===""){
+            alert("Please enter username");
+            return;
+        }
+
+        document.getElementById("loginSection").style.display="none";
+        document.getElementById("chatSection").style.display="block";
+
+        document.getElementById("connectedUser").innerHTML =
+            "Connected as : " + username;
+
+        socket = new WebSocket("ws://localhost:8080/chat");
+
+        socket.onopen = function () {
+            console.log("Connected to server");
+        };
+
+        socket.onmessage = function (event) {
+
+            const messages = document.getElementById("messages");
+
+            messages.innerHTML += "<p>" + event.data + "</p>";
+
+            messages.scrollTop = messages.scrollHeight;
+        };
+
+        socket.onclose = function () {
+            console.log("Disconnected");
+        };
+
+    }
+
+    function sendMessage(){
+
+        const input = document.getElementById("message");
+
+        if(input.value.trim()==="")
+            return;
+
+        socket.send(username + " : " + input.value);
+
+        input.value="";
+    }
+
+</script>
+
+</body>
+
+</html>
